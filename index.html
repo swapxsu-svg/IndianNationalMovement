@@ -1,0 +1,116 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home - Indian Freedom Movement</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+    scroll-behavior:smooth;
+  }
+
+  body{
+    background: url('image/IndexImage.png') no-repeat center center fixed;
+    background-size: cover;
+    color:#F5F5E6;  /* soft ivory for best readability */
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    animation:fadeIn 1.25s ease-in;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Dark overlay for readability */
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  h1{
+    font-size:2.2rem;
+    font-weight:600;
+    margin-bottom:0.5rem;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.75);
+  }
+
+  p{
+    max-width:600px;
+    font-weight:300;
+    margin-bottom:2rem;
+    line-height:1.6;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  }
+
+  .buttons{
+    display:flex;
+    gap:1rem;
+    margin-bottom:3rem;
+  }
+
+  a.button{
+    background:#f4f4f4;
+    color:#203b2d;
+    padding:0.8rem 1.6rem;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:500;
+    transition:0.3s;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  }
+
+  a.button:hover{
+    background:#dbe4de;
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="container">
+     
+
+    <h1> Indian National Movment Project </h1>
+    <p>This project is an initative to expand the knowledge about people involved in the national movement going beyond the traditional medium of books and magazines. Explore Delhi's roads commemorated after people involved in the national movement to learn about India's independence struggle.</p>
+
+ <p> Click the map to discover roads named after people involved in the national movement and explore archival books, journals and gallery. Don't forget to see the about section to learn about the massacres, movements, protest, violences that took place.</p>
+
+
+    <div class="buttons">
+      <a href="map.html" class="button">View Map</a>
+      <a href="archive.html" class="button">View Archive</a>
+      <a href="gallery.html" class="button"> View Gallery</a>
+      <a href="about.html" class="button">View About</a>
+        
+    </div>
+</div>
+
+</body>
+</html>

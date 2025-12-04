@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Freedom Fighters Gallery</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #4B2E05; /* Brown background */
+        font-family: Arial, sans-serif;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+        width: 100%;
+        background: coffee ;
+        padding: 12px 0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .navbar a {
+        padding: 10px 20px;
+        background: white;
+        border: 2px solid #5a381e;
+        border-radius: 30px;
+        text-decoration: none;
+        color: #5a381e;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .navbar a:hover {
+        background: #5a381e;
+        color: white;
+    }
+
+    h1 {
+        text-align: center;
+        color: white;
+        margin: 30px 0;
+        font-size: 36px;
+    }
+
+    .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        max-width: 1200px;
+        margin: auto;
+        padding: 0 20px 40px;
+    }
+
+    .person-card {
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: transform 0.3s;
+    }
+
+    .person-card:hover {
+        transform: scale(1.05);
+    }
+
+    .person-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .name {
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .gallery-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 600px) {
+        .gallery-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- Navigation Buttons -->
+<div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="map.html">Map</a>
+    <a href="archive.html">Archive</a>
+    <a href="about.html">About</a>
+</div>
+
+<h1>National Movement Gallery</h1>
+
+<div class="gallery-container" id="gallery">
+    <!-- JS will load the profiles -->
+</div>
+
+<script>
+    const fighters = [
+       { name: "Bahadur Shah Zafar", img: "image/shahzafar.jpeg", source: "https://www.bbc.com/news/world-asia-41884390" },
+ 
+       { name: "Bhagat Singh", img: "image/bhagatsingh.jpeg", source: "https://www.thehindu.com/opinion/op-ed/rare-documents-on-bhagat-singhs-trial-and-life-in-jail/article2356959.ece" },
+
+       { name: "Mangal Pandey", img: "image/mangal.jpeg", source: "https://www.britannica.com/biography/Mangal-Pandey" },
+
+        { name: "Aruna Asif Ali", img: "image/arunaasafali.jpeg", source: "https://indianexpress.com/article/upsc-current-affairs/upsc-essentials/aruna-asaf-ali-quit-india-movement-upsc-9456828/" },
+
+        { name: "Mahatma Gandhi", img: "image/gandhi.jpeg", source: "https://museumsofindia.gov.in/repository/record/ngma_del-ngma-16594-9911" },
+
+        { name: "Karunaswami Kamraj", img: "image/kamraj.jpeg", source: "https://inc.in/our-inspiration/shri-k-kamaraj" },
+
+        { name: "Deen Dayal Gupta", img: "image/deendayal.jpeg", source: "https://www.bjp.org/hi/pandaita-dainadayaala-upaadhayaaya" },
+
+
+        { name: "Gopinath Bordoloi", img: "image/gopinath.jpeg", source: "https://www.indiatoday.in/india-today-insight/story/from-the-archives-gopinath-bardoloi-the-protector-1915581-2022-02-20" },
+
+        { name: "Giani Gurmukh Singh", img: "image/gurmukhsingh.jpeg", source: "https://indianculture.gov.in/node/2820399" },
+
+        { name: "Baba Kharak Singh", img: "image/Kharaksingh.jpeg", source: "https://archive.org/details/dli.csl.7376" },
+
+        { name: "Lala Lajpat Rai", img: "image/lala.jpeg", source: "https://indianculture.gov.in/node/2824425" },
+
+        { name: "Madan Lal Dhingra", img: "image/madanlal.jpeg", source: "https://indianculture.gov.in/digital-district-repository/district-repository/madanlal-dhingras-trial" },
+
+        { name: "Ram Prasad Bismil", img: "image/ramprasad.jpeg", source: "https://indianculture.gov.in/node/2806445" },
+
+        { name: "Rao Tularam", img: "image/rao.jpeg", source: "https://indianculture.gov.in/node/2825617" },
+
+        { name: "Sardar Udham Singh", img: "image/udhamsingh.jpeg", source: "http://www.shahidbhagatsingh.org/index.asp?choice=co_patriots_details&Person_ID=34" },
+
+        { name: "Lala Jagat Narai", img: "image/jagat.jpeg", source: "https://amritkaal.nic.in/district-reopsitory-detail?29927" },
+
+        { name: "Ashfaqullah Khan", img: "image/khan.jpeg", source: "https://indianculture.gov.in/node/2806443#" },
+
+
+        { name: "Abdul Ghaffar Khan", img: "image/gaffar.jpeg", source: "https://indianculture.gov.in/photo-archives/portrait-khan-abdul-ghaffar-khan-4" },
+
+        { name: "Shivaram Rajguru", img: "image/rajguru.jpeg", source: "http://www.shahidbhagatsingh.org/index.asp?choice=co_patriots_details&Person_ID=11" },
+
+        { name: "Sir Chhotu Ram", img: "image/chhotu.jpeg", source: "https://amritkaal.nic.in/district-reopsitory-detail?30012" },
+
+        { name: "Md. Ali Jauhar", img: "image/jauhar.jpeg", source: "https://indianculture.gov.in/digital-district-repository/district-repository/mohammed-ali-jauhar" },
+        { name: "Dr.Rajendra Prasad (Right)", img: "image/rajendra.jpeg", source: "https://indianculture.gov.in/photo-archives/dr-rajendra-prasad-conversation-marshal-shah-mohammad-delhi" },
+
+        { name: "Kasturba Gandhi", img: "image/Kasturba.jpeg", source: "https://indianculture.gov.in/photo-archives/kasturba-and-gandhi-shortly-after-landing-bombay" },
+ 
+ { name: "Chakravarti Rajagopalchari", img: "image/rajagopalchari.jpeg", source: "https://sansad.in/uploads/09122021_124446_1021206167_bab3b3527a.pdf?updated_at=2022-11-14T05:00:14.905Z" },
+
+ { name: "Subramanian Bharati", img: "image/sbharati.jpeg", source: "https://ia801907.us.archive.org/13/items/dli.ernet.4071/4071-Poems%20Subramania%20Bharati_text.pdf" },
+
+ { name: "Maulana Azad", img: "image/maulanaazad.jpeg", source: "https://inc.in/congress-sandesh/tribute/maulana-azad-as-congress-president" },
+
+ { name: "Rafi Ahmed Kidwai", img: "image/rafiahmed.jpeg", source: "https://app.indiapost.gov.in/philately/commemorative-stamps/commemorative-ps" },
+
+ { name: "Chandrashekhar Azad", img: "image/chandrashekhar.jpeg", source: "https://www.jagranjosh.com/general-knowledge/chandrashekhar-azad-biography-1582712743-1" },
+
+ { name: "MD. Asaf Ali", img: "image/asafali.jpeg", source: "https://ia804603.us.archive.org/33/items/in.ernet.dli.2015.460752/2015.460752.M-Asaf_text.pdf" },
+
+ 
+{ name: "Sukhdev Thapar", img: "image/sukhdev.jpg", source: "http://www.shahidbhagatsingh.org/index.asp?choice=co_patriots_details&Person_ID=9" },
+
+{ name: "Desh Bandhu Gupta", img: "image/deshbandhu.jpeg", source: "https://app.indiapost.gov.in/philately/home" },
+
+ { name: "Lala Hansraj Mahajan", img: "image/hansraj.jpeg", source: "http://indianculture.gov.in/digital-district-repository/district-repository/swami-shraddhanand" },
+
+ { name: "Swami Shraddhanand", img: "image/swami.jpeg", source: "https://www.jagran.com/jammu-and-kashmir/jammu-mahajan-sabha-will-celebrate-the-birth-anniversary-of-sher-e-duggar-lala-hansraj-mahajan-with-great-pomp-22232512.html" }
+
+
+    ];
+
+    const gallery = document.getElementById("gallery");
+
+    fighters.forEach(person => {
+        const card = document.createElement("div");
+        card.className = "person-card";
+        card.innerHTML = `
+            <img src="${person.img}" alt="${person.name}">
+            <div class="name">${person.name}</div>
+            <a href="${person.source}" target="_blank" 
+                style="display:block; margin-bottom:15px; color:#5a381e; font-size:14px;">
+                Source
+            </a>
+        `;
+        gallery.appendChild(card);
+    });
+</script>
+
+
+</body>
+</html>

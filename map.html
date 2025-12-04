@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freedom Fighters Interactive Map </title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+  :root {
+    --brown:#4B2E05 ;
+    --red: #CBB994;
+    --beige: #f4e1c1;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background-color: var(--brown);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  /* Top Bar */
+  .top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--brown);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    z-index: 1002;
+  }
+
+  .top-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .top-buttons button {
+    background-color: var(--red);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 1.5s ease;
+  }
+
+  .top-buttons button:hover {
+    background-color: #922b21;
+  }
+
+  /* Heading */
+  h1 {
+    margin: 0;
+    color: var(--beige);
+    font-size: 20px;
+    text-align: center;
+    flex: 1;
+  }
+
+  /* Layout */
+  .container {
+    display: flex;
+    height: 100vh;
+    margin-top: 45px; /* prevents overlap with top bar */
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background-color: #4B2E05;
+    padding: 15px;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+    color: #222;
+    overflow-y: auto;
+  }
+
+  .sidebar h3 {
+    color: var(--red);
+    text-align: center;
+    margin-top: 0;
+  }
+
+  .sidebar input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .sidebar ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  .sidebar li {
+    background-color: #fdeee6;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 1.5s;
+  }
+
+  .sidebar li:hover {
+    background-color: #f9c9b8;
+  }
+  .leaflet-popup-content {
+   font-size: 17px;      
+   line-height: 1.5;
+   font-family: "Poppins", sans-serif;
+   color: #2c2c2c;
+}
+
+  /* Map */
+  #map {
+    flex: 1;
+    height: calc(100vh - 45px);
+    margin: 0;
+    border-radius: 0;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+      height: 250px;
+    }
+    #map {
+      height: calc(100vh - 295px);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="top-buttons">
+    <button onclick="location.href='index.html'"> Home</button>
+    <button onclick="location.href='archive.html'"> Archive</button>
+    <button onclick="location.href='gallery.html'"> Gallery</button>
+    <button onclick="location.href='about.html'"> About</button>
+  </div>
+  <h1>Indian National Movement Map ( click on the markers or double click on the names in the column. )</h1>
+</div>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>Freedom Fighters Map</h3>
+    <input type="text" id="searchInput" placeholder="Search roads or fighters...">
+    <ul id="fighterList"></ul>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+</div>
+
+<script>
+// Initialize map
+var map = L.map('map').setView([28.6139, 77.2090], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Data for freedom fighters
+var fighters = [
+  {
+    name: "Bahadurshah Zafar Marg",
+    person: "Bahadur Shah Zafar (1757 - 1882)",
+    coords: [28.633154,77.240825],
+    description: "During the 1857 war of Independence, he was declared the leader of the movement by the sepoy. The Salimgarh fort became the place for holding meeting and from where he would oversee the battle.Bahadur Shah Zafar assumed responsibility for all of the mutineers' acts. Zafar sought safety at Humayun's Tomb during the Siege of Delhi, when the British were likely to win. On September 20, 1857, Zafar was taken prisoner after Major William Hodson approached the tomb. Zafar was put on trial and accused with four counts.By testifying against him throughout the trial in exchange for his own pardon, Hakim Ahsanullah Khan betrayed him. Instead of receiving a death sentence, Zafar was banished to Rangoon, Burma."
+  },
+  {
+    name: "Shaheed Rao Lakshmi Chand Marg",
+    person: "Rao Lashmi Chand (1818 - 1857)",
+    coords: [28.564768,76.944648],
+    description: "He led the First War of Independence in 1857. Alongside his cousin Prank Sukh Yadav, Rao Laxmi Chand fought against the British on November 16, 1857, in Rajpath with an army of approximately 5,000 infantry and 3,000 cavalries. Following the execution of Rao Laxmi Chand, the fort was destroyed, and the British recruited his soldiers. After the Britisher successfully defeated Rao Laxmi Chand, they offered him a position to work for them, promising to reinstate him as the King of West, South West, and South Delhi, given his strong influence in the area, which would facilitate their control over the local population; however, he declined and was executed on December 23, 1857, in Rajpath."
+  },
+  {
+    name: "Nahar Singh Marg",
+    person: "Raja Nahar Singh (1821 to 1858)",
+    coords: [28.678078,77.158198],
+    description: "Nahar Singh came to power in 1829. Up until 1857, Nahar Singh remained in power. Raja Nahar Singh seized control of the town of Palwal and the district treasury on May 25, 1857. Additionally, he assumed leadership of Fatehpur. Nahar Singh was found guilty of rebellion and executed by hanging on January 9, 1858, in Chandni Chowk, Delhi. His other belongings were deemed a prize to the troops, and his estate was seized.It was said that Raja Nahar Singh sent forces to Palwal with the intention of usurping an unlawful jurisdiction in order to provide money, supplies, and weapons to the rebels. Additionally, it was claimed that Raja Nahar Singh ignored District Collector William Ford when he was fleeing for his life. Ballabgarh villages were transferred to Gurgaon district."
+  },
+{
+    name: "Rao Tularam Marg",
+    person: "Rao Tularam (1825 - 1863)",
+    coords: [28.574421,77.166713],
+    description: "He utilised guerilla warfare during the 1857 war of independence. From Rewari, Rao Tularam assembled a formidable army and forged partnerships with North Indian rebel leaders, including Bahadur Shah Zafar, the final Mughal emperor.Particularly around Gurgaon and Rewari, the Rao Tula Ram troops were involved in numerous skirmishes and battles with the British. After the Battle of Nasibpur, where Rao Tula Ram (the King of Ahirwal) was the defeated, he fled to Afghanistan and sought support from other countries to carry on the fight against the British. Rao Tula Ram's and other leaders' estates were seized."
+  },
+{
+    name: "Mangal Pandey Marg",
+    person: "Mangel Pandey (1827 - 1857)",
+    coords: [28.698016,77.312499],
+    description: "While stationed in the Barrackpore garrison in the mid-1850s, Mangal Pandey faced a circumstance that conflicted his military obligations with his religious convictions.The British adopted the new Enfield rifle, necessitating men to bite open lubricated cartridges. Rumours emerged that the grease was made from cow and pig lard substances. Sepoys became very resentful of this. The events of March 29, 1857, were made possible by this tension.He attacked two officers, firing his musket and then trying to harm himself when restrained. His acts served as a symbolic catalyst for resistance. He was detained, put on trial, and given the death penalty. The British moved up his execution from April 18 to April 8 out of fear of a wider uprising."
+  },
+{
+    name: "Swami Shraddhanand Marg",
+    person: "Swami Shraddanand (1856 - 1926)",
+    coords: [28.650186,77.220915],
+    description: "Influenced by Maharishi Dayanand Saraswati, the Arya Samaj founder. In 1917, he finally became a monk, or sannyasi. Shraddhanand believed the British schooling was ruining Indian culture. He founded Gurukul Kangri near Haridwar in 1902. During the protest against Rowlatt Act in Delhi in 1 91 9, British soldiers were ready to shoot. Shraddhanand walked right up to them, opened his shirt, and dared them to shoot him first. The soldiers backed off. The only Hindu Sanyasi to speak to a sizable crowd from the minarets of the grand Jama Masjid in New Delhi was Swami Shraddhanand. He wrote in both Hindi and Urdu about religious matters. A fanatic shot and killed him on December 23, 1 926, while he was sick in Delhi."
+  },
+{
+    name: "Lala Lajpat Marg ",
+    person: "Lala Lajpat Rai (1865 - 1928)",
+    coords: [28.564615,77.240582],
+    description: "He joined the Congress session at Allahabad in 1881. Influenced by the Swadeshi ideas of the Arya Samaj, Lala Lajpat Rai joined in 1882. He travelled to England in 1905 as a representative of the British public education movement about the state of India with the backing of labour, democracy, and socialism. He was deported to Burma in 1907 after organising agrarian uprising in Punjab. In July 1920, he was chosen to lead the Indian National Congress's special session in Calcutta. He participated in the non-corporation movement at the Nagpur Congress Session in 1920. In addition to leading this effort in Punjab, he conducted an all-India tour while serving as President of the Punjab Provincial Congress Committee. Lalaji was killed on November 17, 1929 after Lahore City's superintendent of police (SP), Scott, ordered a lathi charge and his constable, Saunders, physically struck him."
+  },
+
+{
+    name: "Lala Hansraj Mahajan Marg",
+    person: "Lala Hansraj Mahajan (1866 - 1944)",
+    coords: [28.658418,77.286131],
+    description: "He established the Mahajan Sabha in 1892 and was instrumental in the formation of the Dogra Sadar Sabha and the Jammu Rajput Sabha. These organizations promoted the socioeconomic advancement of Jammu society and the elevation of lower castes. Lala Hansraj was a fervent advocate of the Swadeshi Movement. He set up a khaddar manufacturing and dyeing factory at Purani Mandi in Jammu for this reason. By starting publications like Dogra Gazette, Mahajan Niti Patra, and Mahajan Sarmachar, Lala Hansraj also made a substantial contribution to journalism and public awareness. In July 1936, he was overwhelmingly elected as a Member of the Assembly. His efforts led to the development of the State Subject Certificate. His efforts resulted in the founding of Jammu's Prince of Wales College."
+  },
+{
+    name: "Ajmal Khan Marg",
+    person: "Ajmal Khan (1868 - 1927)",
+    coords: [28.650438,77.192476],
+    description: "He founded important organizations that prevented the deterioration of these native medical systems during British administration. These included Ayurvedic Rasayanshala, Hindustani Dawakhana, Jamia Millia Islamia. In Delhi, he established Madarasa-e-Tibbia Zanana, a women's medical school that Lady Dane opened on January 13, 1909. He disassociated himself from the Muslim League and collaborated closely with the congress during the Khilafat Movement. He presided over the Hindu Mahasabha, the Muslim League (1919), the Indian National Congress (1921), and the All India Khilafat Committee (1920). From 1920 until his passing, he founded Jamia Milia Islamia and served as its first Chancellor. In opposition to Imperial policy, he gave up the honorary British titles Kaiser-i-Hind (1915) and Haziq-ul-Mulk (1908) in 1920. He was then given the moniker Masih-ul-Mulk (Messiah of the Nation)."
+  },
+{
+    name: "Baba Kharak Singh Marg",
+    person: "Baba Kharak Singh (1868 - 1963)",
+    coords: [28.631355,77.216569],
+    description: "During Lahore session of CSL, Baba Kharak Singh proposed a resolution calling on Sikhs to abandon their pro-British views and engage in national politics. Baba Kharak Singh and 26 nationalist Sikhs published a manifesto during the non-cooperation campaign, requesting 1250 satyagraha volunteers. At the same time, Baba Kharak Singh presided over the CSL, the Akali Dal, and the INC provincial committee. Sikhs were asked to abstain from the Simon Commission by Baba Kharak Singh. The government did not believe Baba Kharak Singh, and in November 1921, the Deputy 7th Commissioner of Amritsar took away the keys to the Golden Temple. On November 21, Baba Kharak Singh, along with 1,200 additional Akali members were detained by the police. They were released on January 22, 1922. In the presence of Kharak Singh in Calcutta, a number of gatherings were arranged, including one in Town Hall on December 19, 1927. Kharak Singh was opposed to the Khalsa Nationalist Party."
+  },
+{
+    name: "Mahatma Gandhi Marg",
+    person: "Mahatma Gandhi (1869 - 1948)",
+    coords: [28.626865,77.134079],
+    description: " Gandhi studied at Alfred High School, Rajkot, and later travelled to London in 1888 to study law at the Inner Temple. He returned to India and got involved in the freedom movement through Champaran satyagraha for Indigo farmers. Between 1893 and 1914, Gandhi founded the Indian National Congress and led mass struggles based on satyagraha, non-violent resistance. Returning to India in 1915, he joined the Indian National Congress and became central to major movements like the Non-Cooperation Movement (1920), Civil Disobedience Movement (1930), and Quit India Movement (1942). Gandhi’s emphasis on rural upliftment, Hindu–Muslim unity, and self-reliance made him a moral force in Indian nationalism. Gandhi opposed the partition of India, fearing communal violence."
+  },
+{
+    name: "Kasturba Gandhi Marg",
+    person: "Kasturba Gandhi (1869 - 1944)",
+    coords: [28.621581,77.226124],
+    description: "Kasturba Gandhi was a prominent freedom fighter who actively participated in every major Satyagraha campaign, resulting in multiple jail terms in both South Africa and India. During the Champaran Satyagraha, she managed the community kitchen for volunteers and visited villages to teach women about cleanliness and education. In the Non-Cooperation Movement (1921), she travelled extensively across Gujarat, appealing to women to boycott foreign cloth and liquor, vigorously promoting Khadi. Her political leadership included presiding over the Gujarat Provincial Conference in 1922 and actively challenging the British by attempting to hold a conference in 1933, which led to her arrest. Her commitment endured until the Quit India Movement (1942) leading to her final detention where she eventually passed away."
+  },
+{
+    name: "Md. Ali Jauhar Marg",
+    person: "Mohammed Ali Jauhar (1878 - 1931)",
+    coords: [28.561050,77.275966],
+    description: "He founded the English weekly 'The Comrade' in 1911, and Urdu daily 'Hamdard'. In his newspapers, he was a vocal proponent of Indian independence and political rights for the Muslims. He was one of the founders of the All-India Muslim League, and its President in 1918. In 1923, he became the President of the Indian National Congress. Muhammad Ali Jauhar, along with his brother Shaukat Ali. In 1920, he co-founded the Jamia Millia Islamia in Aligarh (eventually shifted to Delhi) as a nationalist alternative to the official Aligarh. He opposed the Nehru Report of 1928. At the 1930 Round Table Conference in London, he stated that he would never return to a slave India."
+  },
+{
+    name: "Rajiji Marg",
+    person: "Chakravarti Rajagopalchari (1878 - 1972)",
+    coords: [28.602255,77.205047],
+    description: "The Non-cooperation movement gained Momentum in Tamil Nadu under the dynamic leadership of C. Rajagopalachari. At the age of 59, Rajagopalachari won the Madras seat and entered the Assembly as the first Premier of the Madras Presidency from the Congress party. Rajagopalachari issued the Temple Entry Authorization and Indemnity Act 1939, under which Restrictions were removed on Dalits from entering Hindu temples. In the same year, The Meenakshi temple at Madurai was also opened to Dalits. In March 1938 Rajagopalachari introduced the Agricultural Debt Relief Act, to ease the burden of debt on the province’s peasant population. Rajaji announced that the government would seek to introduce Hindi as a compulsory language for school children in the Madras Presidency. Rajagopalachari served as Governor-General of Independent India from 10 until 24 November 1947"
+  },
+{
+    name: "Chhotu Ram Marg",
+    person: "Sir Chhotu Ram (1881 - 1945)",
+    coords: [28.708041,77.104417],
+    description: "He was a prominent Indian agrarian reformer, politician and ideologue in Punjab Province during pre-independent India. He was known for his advocacy for the rights of farmers and oppressed rural communities. A co-founder of the National Unionist Party, he played a pivotal role in shaping agrarian policies that protected peasants from exploitative moneylenders and promoted agricultural development in pre-independent India. His legislative reforms, including the Punjab Restitution of Mortgage Land Act and the Punjab Agricultural Produce Markets Act, laid the foundation for modern agricultural market systems and farmer protections, earning him a knighthood in 1937 and the title of Rao Bahadur. He is widely regarded as father of Bakhra Dam. He co-founded the Jat Mahasabha and started a weekly newspaper, Jat Gazette."
+  },
+{
+    name: "Subramaniyam Bharati Marg",
+    person: "Subramaniyam Bharati (1882 - 1921)",
+    coords: [28.603145,77.232795],
+    description: "Popularly regarded as Mahakavi, Subramania Bharati was a poet, freedom warrior, and social reformer. Bharathi printed the weekly on crimson paper. The first Tamil Nadu newspaper with political cartoons was 'India'. The weekly publication 'India' debuted in print in May of 1906.It took liberty, equality, and fraternity the three tenets of the French Revolution as its central emphasis. It cleared the path for upcoming Tamil journalists. It should come as no surprise that the colonial authority used repressive tactics and issued a warrant for Bharati's arrest. Due to the worsening conditions in 1908, Bharathi opted to seek asylum in Puducherry, then a French territory, and persisted in publishing India."
+  },
+{
+    name: "Dhingra Marg",
+    person: "Madan Lal Dhingra (1883 - 1909)",
+    coords: [28.692915,77.202071],
+    description: "He was influenced by ongoing nationalist monument seeking Home Rule.He joined a secretive society, the Abhinav Bharat Mandal founded by Savarkar and his brother, Ganesh. Savarkar, who was already a commanding figure among Indian revolutionaries abroad, converted Dhingra's patriotism into a commitment to armed struggle. On July 1, 1909, Dhingra assassinated Sir William Hutt Curzon Wyllie, a senior official at the India Office in London. He fired five shots right at his face, four of which hit their target. Dhingra was tried in the Old Bailey on 23 July. He represented himself during his trial but did not recognize the legitimacy of the court. He was sentenced to death. Madan Lal Dhingra was hanged on 17 August 1909 at Pentonville prison."
+},
+{
+    name: "Dr. Rajendra Prasad Marg",
+    person: "Dr. Rajendra Prasad (1884 - 1963)",
+    coords: [28.616550,77.221677],
+    description: "He topped the highly competitive entrance exam for Calcutta University and won a scholarship. He went on to build a highly successful and lucrative career in law. In 1917 he joined Gandhiji during the Champaran Satyagraha. Immediately after this he quitted his busy law practice. He adopted Gandhi's strict principles of nonviolence. He led the Indian National Congress many times and was arrested during big movements like the Salt Satyagraha and the Quit India Movement. After India became independent, he took on the vital job of leading the Constituent Assembly to write the Constitution. He served as President for a record twelve years."
+  },
+{
+    name: "Maulana Azad Marg",
+    person: "Maulana Azad (1888 - 1958)",
+    coords: [28.610109,77.220628],
+    description: "In 1912, Maulana Abul Kalam Azad created a weekly publication in Urdu named Al-Hilal. Al-Hilal was outlawed in 1914. Maulana Abul Kalam Azad then founded another weekly, Al-Balagh. The government also outlawed this publication in 1916. Maulana Abul Kalam Azad was banished from Calcutta and captured in Ranchi, where he was later freed during World War I in 1920. Maulana Abul Kalam Azad joined the Indian National Congress in 1920 after supporting Gandhiji's Non-Cooperation Movement. He was chosen to lead the Congress during its extraordinary session in Delhi in 1923. Maulana Azad was detained once more in 1930 for breaking the salt restrictions. He spent a year and a half behind bars in Meerut. In 1940 (Ramgarh), Maulana Abul Kalam Azad was elected president of the Congress."
+  },
+{
+    name: "Asaf Ali Marg",
+    person: "Md. Asaf Ali (1888 - 1953)",
+    coords: [28.641523,77.233960],
+    description: "Asaf Ali was an Indian lawyer and member of Indian National Congress. Batukeshwar Dutt hired Asaf Ali to represent him during the assembly bombing trials. It was Asif Ali who read the Bhagat Singh and Dutt's historic statements in sessions of the court where the Delhi Bomb was tried on June 6, 1929. He was also the part of defense committee setup to defend INA soldier who were being tried for treason. He was provided as the legal counsel to Sheikh Abdullah by INC after he was arrested under sedition charges for Quit Kashmir movement against Maharaja Hari Singh. He later served as the first Indian ambassador to the United States of America."
+  },
+{
+    name: "Gopinath Bordoloi Marg",
+    person: "Gopinath Bordoloi (1890 - 1950)",
+    coords: [28.601210,77.195631],
+    description: "Gopinath Bordoloi Known as 'Lokpriya', played a key role in the integration of the northeast area with India. On September 2, 1921, he joined the Guwahati Town Congress Committee. Bordoloi immersed himself in Non-Cooperation in 1921. In 1926, he was instrumental in setting up the first All-India Congress Session in Pandu. Gopinath Bordoloi was elected to the Assam Legislative Council as an opposition leader in 1936–1937. After Sir Sadullah was removed in 1938, he quickly rose to the position of Premier of Assam. Bordoloi resigned from the position during Quit India movement and was imprisoned. He was appointed Chairman of the North-East Frontier (Assam) Tribal and Excluded Areas Committee. In 1947 he became the state's first chief minister in independent India. He was the driving force behind the Constitution's Sixth Schedule."
+  },
+{
+    name: "Abdul Ghaffar Khan Marg",
+    person: "Abdul Ghaffar Khan (1890 - 1988)",
+    coords: [28.635918,77.227943],
+    description: "At the age of 20, Khan founded a mosque school in his village in 1910. But in 1915, his school was shut down by British authorities owing to accusations of anti-British activity. Khan had joined the Pashtun independence movement headed by Turangazi activist Haji Sahib. In the 1920s, he founded the Khudai Khitmatgar, referred as the 'Red Shirts' (Surkh Pōsh). More than 125,000 people joined the Khudai Khitmatgar movement. The group controlled the political climate of the Northwest Frontier Province through strikes, political actions, and peaceful demonstrations. Khan fiercely opposed India's division. He was hospitalized in Peshawar in 1946 after being attacked by certain politicians who thought he was anti-Muslim. Due to concerns about his allegiance towards Pakistan, he was under house arrest from 1948 to 1954."
+  },
+{
+    name: "Rafi Ahmed Kidwai Marg",
+    person: "Rafi Ahmed Kidwai (1894 -1954)",
+    coords: [28.614822,77.212179],
+    description: "His political life started 1921 when he joined the Non-Cooperation Movement, which quickly led to his first arrest. He joined the Swaraj Party and was its key leader in the Central Legislative Assembly. He became famous there for successfully gathering votes to defeat the unfair Public Safety Bill. He was the main planner of the strong peasant 'no-rent' campaigns in U.P. during the Civil Disobedience Movements of 1930. He was arrested again just before the major Quit India Movement began in 1942. As the U.P. Home Minister, he used anti-riot plan which protected the state from the brutal community violence that hurt other regions. As Revenue Minister, he brought in the U.P. Tenancy Law, often called the 'Magna Carta of the peasantry,' to stop the centuries-old unfairness of the Zamindari system."
+  },
+{
+    name: "Ram Prasad Bismil Marg",
+    person: "Ram Prasad Bismil (1897 - 1927)",
+    coords: [],
+    description: "As Matrivedi Shahjahanpur chief, he released a book 'America Ki Swatantrata Ka Itihas' in 1916. Bismil was branded an absconder in the Mainpuri conspiracy case, and he didn't come out of hiding until a general amnesty was issued. In 1919, Bismil secretly started a series of publications to be translated from Bengali into Hindi, which he named Sushil Mala. Bismil campaigned and gave speeches at Hardoi, Shahjahanpur, and Bareilly as part of the Non-cooperation Movement. He played a critical role in the Kakori Train Action on August 9, 1925, where the HRA ambushed a British train to seize funds for their revolutionary activities. He was put to death in 1927 after being found guilty of his involvement in the Kakori incident. His autobiography, Kakori Ke Shaheed, was released after it was smuggled out of prison."
+  },
+{
+    name: "Giani Gurmukh Singh Musaphir Marg",
+    person: "Giani Gurmukh Singh (1899 - 1976)",
+    coords: [28.738241,77.116937],
+    description: "In 1930, he courted arrest during the Civil Disobedience Movement. He rose to become the leader of Akal Takht, the Sikhs' main centre of religious authority. From March 12, 1930, to March 5, 1931, he served in this capacity. He also held positions as general secretary of the Shiromani Akali Dal and secretary of the Shiromani Gurdwara Parbandhak Committee. As part of the Quit India and Satyagraha activities, he also courted arrest. The Congress Party elected Musafir to the Constituent Assembly. He played role in citizenship and separate electorates debates in the Constituent Assembly. He later served as the chief minister of the Punjab, India."
+  },
+{
+    name: "Lala Jagat Narayan Marg",
+    person: "Lala Jagat Narain (1899 - 1981)",
+    coords: [28.697796,77.140808],
+    description: "In 1920 to he joined Mahatma Gandhi’s Non-Cooperation Movement. Arrested in 1921, he was imprisoned for two and a half years, during which he worked as Lala Lajpat Rai’s Secretary. In 1924, he became the editor of Bhai Parmanand’s Hindi weekly ‘Akashvani’. He participated in various Satyagraha movements and was jailed for a total of nine years. His wife was imprisoned for six months and even his children were arrested during the Quit India Movement. Lala Jagat served as President of the Lahore City Congress Committee for seven years and was a long-time member of the Punjab Provincial Congress Committee and All-India Congress Committee. After Partition, he moved to Jalandhar, where he was elected to the municipality and improvement trust. In 1951, he became General Secretary of the Punjab Congress."
+  },
+{
+    name: "Shaheed Udham Singh Marg",
+    person: "Sardar Udham Singh (1899 - 1940)",
+    coords: [28.705171,77.160631],
+    description: "He was injured in the arm on April 13, 1919, the day of the Jallianwala Bagh massacre, while providing water to the numerous pilgrims who had assembled to commemorate the Sikh festival on the first day of Bai Sakhi. He spent four years behind bars on a charge of possessing weapons in late 1927.On March 13, 1940, Sir Michael O'Dwyer, the former governor of Punjab who had witnessed the Jallianwala Bagh massacre, was shot and killed by Udham Singh in London's Caxton Hall. In June 1940, Udham Singh was tried and put to death in London's Pentonville Prison for the murder of Sir Michael on July 31st of that year. The physical remains of Udham Singh was transferred to India early on July 19, 1974."
+  },
+{
+    name: "Ashfaq Ulla Khan",
+    person: "Ashfaq Ulla Khan (1900 - 1927)",
+    coords: [28.644655,77.035498],
+    description: "His revolutionary journey began during his schooling when a police raid inspired him to seek out freedom fighters like Khudiram Bose and bond with fellow revolutionary Ram Prasad Bismil. Initially involved in Mahatma Gandhi's Non-Cooperation Movement, Khan became disillusioned after the Chauri Chaura incident in 1922, prompting him to support armed struggle against British rule. He co-founded the Hindustan Republican Association (HRA) in 1924, aiming to overthrow the British and establish a socialist republic. Khan played a critical role in the Kakori Train Action on August 9, 1925, where the HRA ambushed a British train to seize funds for their revolutionary activities. After going into hiding post-Kakori, he was betrayed, arrested, and executed on December 19, 1927."
+  },
+{
+    name: "Desh Bandhu Gupta Marg",
+    person: "Desh Bandhu Gupta (1901 - 1951)",
+    coords: [28.629786,77.236608],
+    description: "Deeply affected by the Jallianwala Bagh massacre, he left college to join the Indian National Congress. He was an active participant in major movements like the Non-cooperation Movement and the Quit India Movement, enduring imprisonment multiple times for his 'subversive' political activities, starting at the age of 19. A staunch champion of the free press, Gupta used his journalistic skills to further the national cause. He worked with Lala Lajpat Rai on the newspaper Bande Mataram and later founded the daily newspaper Rozana Tej (Urdu) what would later become ‘The Indian Express”. He served in the Punjab Provincial Assembly and as a member of the Constituent Assembly of India where he argued for the freedom of the press and successfully advocated for the grant of an assembly status for Delhi."
+  },
+{
+    name: "Kamaraj Road",
+    person: "Kumaraswami Kamaraj (1903 - 1973)",
+    coords: [28.609904,77.210137],
+    description: "Kamaraj was a vocal activist against the British Raj, who was inspired to join the Freedom struggle by the Jallianwala Bagh massacre. In 1920, he joined Congress as a full-time worker. His participation in the Salt Satyagraha resulted in the first of his several imprisonments. He also participated in the Nagpur flag Satyagraha, and led the Sword Satyagraha and the Neil Statue Satyagraha.He actively worked as political Campaigner, organizing public meetings and carrying the Congress propaganda. After joining the Congress, he participated in almost all agitations and Demonstrations against the British rule. In 1942, he was jailed for three years for his involvement in the Quit India Movement."
+  },
+{
+    name: "Chandrashekhar Azad Marg",
+    person: "Chandrashekhar Azad (1906 - 1931)",
+    coords: [28.673380,77.076916],
+    description: "Azad’s contributions were instrumental in promoting a more militant approach to the freedom struggle, particularly among the youth of the time. He was involved in planning and executing several high-profile attacks, including the attempt to blow up the Viceroy’s Train and the shooting of British police officers. Chandra Shekhar Azad’s approach to armed resistance and guerrilla warfare was a cornerstone of his strategy. His methods were characterized by strategic planning, Secrecy, and the use of surprise attacks typical of guerrilla warfare. During the Delhi Assembly Bombing (1929) While Azad did not physically participate in throwing the bombs, he was instrumental in planning the bombing. He died in an encounter with the British police at Alfred Park in Allahabad in 1931."
+  },
+{
+    name: "Shaheed Sukhdev Marg",
+    person: "Sukhdev Thapar (1907 - 1931)",
+    coords: [28.577479,77.244525],
+    description: "Sukhdev took part in the Non – Corporation Movement. He joined the Naujawan Bharat Sabha formed in 1926 by Bhagat Singh. Following bhagat Singh he later joined the Hindustan Republican Association. Sukhdev was the primary accused in the 1929 Lahore conspiracy case as it was filed under the name Sukhdev vs the Crown. Irrespective of his indirect involvement, he was considered the real brain behind the attack and was listed 1st on the accused list. He was tried and executed for his role in Lahore conspiracy case at 7 p.m. on March 23, 1931."
+  },
+{
+    name: "Shaheed Bhagat Singh Marg",
+    person: "Bhagat Singh (1907 - 1931)",
+    coords: [28.633274,77.212462],
+    description: "In 1921, He took part in the Non - Corporation Movement. Singh founded the Naujawan Bharat Sabha in March 1926. Bhagat Singh was detained by the Singh police in Lahore in 1927 due to his involvement in the bomb case in October 1926 Dussehra. Despite the extremely hefty bail of Rs. 60,000, Bhagat Singh had to be freed. Bhagat Singh escaped to Calcutta. From there, He and Jatinder Nath came to Lahore to educate other comrades in bomb-making skills. He later joined the Hindustan Republican association. On April 8, 1929, Singh and B. K. Dutt dropped bombs on the Assembly, and raising the shouts Inquilab Zindabad."
+  },
+{
+    name: "Shaheed Rajguru Marg",
+    person: "Shivaram Rajguru (1908 - 1931)",
+    coords: [28.632472,77.075754],
+    description: "He joined the Naujawan Bharat Sabha formed by Bhagat Singh in 1926. Following bhagat Singh he later joined the Hindustan Republican Association. He was first arrested for his activities in Kakori incident but later released. As a revenge for death of Lala Lajpat rai, HRSA decided to assassinate the Jame Scotts. Bhagat Singh and Rajguru were assigned the assasination, however Azad misidentified Scotts with John Saunders. Rajguru in a hesitance shot him dead. He was later traced at Lahore and arrested. He was tried and executed for his role in Lahore conspiracy case at 7 p.m. on March 23, 1931"
+  },
+{
+    name: "Aruna Asaf Ali Marg",
+    person: "Aruna Asaf Ali (1909 - 1966)",
+    coords: [28.530553,77.170906],
+    description: "In 1930 she Participated in the Salt Satyagraha and was arrested. She remained in the Prison for more than a year. On 9th August 1942, Aruna who came forward to preside over the Congress Committee after it passed the Quit India Resolution at its Bombay session and hoisted congress Flag at the Gowalia Tank Maidan. Aruna Asaf Ali was regarded as the ‘Heroine of the Quit India Movement’ for her bravery in the context of danger and was called ‘Grand Old Lady of the Independent Movement.’ In February, 1946 Aruna suggested to form a new Azad Hind Army of India under the banner of Congress to organize revolutionary Movement to over throw the British rule in India. In 1958 she was elected as the first female Mayor of Delhi."
+  },
+{
+    name: "Deendayal Upadhyay Marg",
+    person: "Deendayal Upadhyay (1916 - 1968)",
+    coords: [28.629786,77.236608],
+    description: "While studying in Kanpur, he encountered the Rashtriya Swayamsevak Sangh (RSS) in 1937 and shortly thereafter committed himself fully as a Pracharak (organizer) for the organization, dedicating his life entirely to the cause of cultural and national revival. Upadhyaya's significant contributions are foundational to the contemporary Indian political landscape, emerging from his relentless work as an organizer and his unique political philosophy. He played a vital role, alongside Dr. Syama Prasad Mookerjee, in founding the Bharatiya Jana Sangh (BJS) in 1951, where he acted as the party's General Secretary for more than fifteen years. His most lasting legacy is the philosophy of Integral Humanism (Ekatma Manawvad), which he introduced as a critique of both Western capitalism and Marxist socialism, advocating for an indigenous economic and political framework grounded in Indian culture."
+  }
+
+];
+
+// Add markers and sidebar list
+var fighterList = document.getElementById("fighterList");
+var listItems = [];
+
+fighters.forEach(f => {
+  var marker = L.marker(f.coords).addTo(map)
+    .bindPopup(`<b>${f.person}</b><br><i>${f.name}</i><br><br>${f.description}`);
+
+  var li = document.createElement("li");
+  li.textContent = f.name + " — " + f.person;
+  li.onclick = () => {
+    map.setView(f.coords, 15);
+    marker.openPopup();
+  };
+  fighterList.appendChild(li);
+  listItems.push({ element: li, data: f });
+});
+
+// Search functionality
+document.getElementById("searchInput").addEventListener("input", function() {
+  var query = this.value.toLowerCase();
+  listItems.forEach(item => {
+    if (
+      item.data.name.toLowerCase().includes(query) ||
+      item.data.person.toLowerCase().includes(query)
+    ) {
+      item.element.style.display = "block";
+    } else {
+      item.element.style.display = "none";
+    }
+  });
+});
+</script>
+</body>
+</html>
+

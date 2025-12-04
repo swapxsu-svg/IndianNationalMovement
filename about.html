@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About | National Movement – Video + Credits</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      color: #fff;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* TOP NAV BAR (SMALL + CENTERED) */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 40px;
+      background: #5a3b07;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .navbtn {
+      color: #ffffff;
+      background: #ffffff22;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      border: 1px solid #ffffffbb;
+      transition: 0.2s;
+      backdrop-filter: blur(3px);
+    }
+
+    /* FULLSCREEN VIDEO */
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background: #000;
+    }
+    .video-bg video {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* DARK SCRIM */
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.6) 0%,
+        rgba(0,0,0,0.3) 40%,
+        rgba(0,0,0,0.6) 100%
+      );
+    }
+
+    /* ROLLING CREDITS */
+    :root { --credits-duration: 110s; }
+    .credits {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    /* FIX INSERTED BELOW (top:100%) */
+    .scroll {
+      position: absolute;
+      top: 100%;  /* FIX: ensures animation starts fully below screen */
+      width: 90%;
+      max-width: 900px;
+      text-align: center;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.9);
+      color: #fff;
+      font-size: clamp(12px, 2vw, 20px);
+      animation: roll var(--credits-duration) linear infinite;
+      animation-play-state: running;
+    }
+
+    @keyframes roll {
+      from { transform: translateY(0); }
+      to { transform: translateY(-200%); }
+    }
+
+    /* CONTROLS */
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 10;
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      padding: 10px 16px;
+      border-radius: 30px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      cursor: pointer;
+      backdrop-filter: blur(3px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="topbar">
+    <span style="color:white; font-size:12px; margin-right:10px; opacity:0.9;">Click Unmute for audio to play</span>
+    <a href="index.html" class="navbtn">Home</a>
+    <a href="map.html" class="navbtn">Map</a>
+    <a href="archive.html" class="navbtn">Archive</a>
+    <a href="gallery.html" class="navbtn">Gallery</a>
+  </div>
+
+  <!-- VIDEO -->
+  <div class="video-bg">
+    <video id="bgVideo" autoplay loop preload="auto" playsinline webkit-playsinline x5-playsinline>
+      <source src="image/aboutvideo.mp4" type="video/mp4" />
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+
+  <div class="scrim"></div>
+
+  <!-- CREDITS OVER VIDEO -->
+  <div class="credits">
+    <div class="scroll" id="scroll">
+
+      <h1>About National Movement </h1>
+
+<p>The Indian National Movement was a prolonged and multifaceted collective actions of resistance against British colonialism, covering the period from the Revolt of 1857 to the independence in 1947. It was not a political campaign alone; it was a journey that transformed the social, cultural, and ideological scenery of the Indian subcontinent.</p>
+
+<p>What began as polite petitions for constitutional reform soon grew into a passionate struggle for freedom. India's leaders worked together to make many different groups of people feel like they were all part of one country, as such creating the identity of Indian Nation. Their shared ideals and collective thoughts about right and wrong helped laid foundation for the principles of Indian Nation.</p>
+
+<p>The project seeks to move beyond traditional historiography, which often presents history as a monolithic object a grand narrative and develop a model which narrate the contribution of the people involved in the national movement whose names have become a part of Delhi’s Urban morphology through commemoration of roads.</p>
+
+<p>This involves systematically linking the core history curriculum with other domains, such as geography (via the interactive map), media (gallery development), historical literature (via archival access), and technology.</p>
+
+      <h2>Mass Movements</h2>
+
+      <p><strong>Champaran Satyagraha, 1917</strong> - Mass movement led by Gandhi against law for Planters to reimburse the peasants 25% of unlawfully collected funds. </p>
+
+
+      <p><strong>Non-Cooperation (1920–22)</strong> - Between 30,000 and 100,000 people were arrested, including Gandhi.</p>
+
+      <p><strong>Chauri Chaura Incident, 1922</strong> - Gandhi suspended the Non-Cooperation Movement when a mob set fire to a police station, which resulted in the deaths of 22 police officers and three civilians.</p>
+
+      <p><strong>Civil Disobedience (1930–34)</strong> - Police firings claimed several hundred lives. More than 100,000 people were detained (more than 60,000 in 1930 alone)large-scale nonviolent protest, such as the well-known Dandi Salt March.</p>
+
+      <p><strong>Quit India (1942 - 44)</strong> - 50,000-100,000 deaths (Indian estimates) to 1,060 (official)More than 100,000 people were jailed; leaders were imprisoned until 1945; the "Do or Die" demand for instant independence was met with the worst British persecution.</p>
+
+      <h2>Rebellions</h2>
+
+      <p> <strong>First War of Independence, 1857</strong> - Executions and mass arrests Massacres and extreme bloodshed on both sides characterized the first significant armed rebellion against British rule.</p>
+
+<p><strong>Munda Rebellion (1899-1900)</strong> - Under Birsa’s leadership, tribal communities asserted their traditional land rights, refused to pay rents, rejected conversions by missionaries, and launched attacks on colonial authorities and landlord.200–400 tribal people killed. </p>
+
+      <p><strong>Malabar Rebellion (1921- 22)</strong> - 300-10,000 Muslims and Hindus slain Tens of thousands were detained during a community revolt by anti-British peasants.</p>
+
+
+      <h2>Repressions</h2>
+
+      <p><strong>Kuka (Namdhari) Massacre, 1872</strong> - 65  Cannons blast Namdharis. Unidentified arrests Namdhari Sikhs were blasted from cannons and killed without a trial</p>
+
+      <p><strong>Mangarh Massacre, 1913</strong> - British soldiers opened fire with machine guns and cannons on a peaceful tribal gathering, killing 1,500 Bhil tribal members and capturing 900 others.</p>
+
+      <p><strong>Jallianwala Bagh Massacre, 1919</strong> - 379 (official) to more than 1,000 dead During martial law, the British Indian Army under General Dyer opened fire on an unarmed mob in Amritsar, resulting in thousands of arrests.</p>
+
+      <p><strong>Nankana Massacre, 1921</strong> - 140-260 Sikhs were slain in the Nankana Massacre. Unknown arrests At Nankana Sahib, hired goons of the Mahant slaughtered peaceful Sikh reformers.</p>
+
+      <p><strong>Pal-Chitariya Massacre, 1922</strong> - 1,200 Bhil tribals killed; Unknown arrests; Mewar Bhil Corps opened fire on tribal gathering protesting forced labour.</p>
+
+      <p><strong>Qissa Khwani Bazaar Massacre, 1930</strong> - 200-400 unarmed protesters killed; Thousands arrested,British Indian Army fired on Khudai Khidmatgar demonstrators in Peshawar.</p>
+
+      <p><strong>Amko Simko massacre, 1939</strong> -  49 to 300 tribal peasants dead, ~ 50 injured. Crowd of tribals resisting the arrest of freedom fighter Nirmal Munda fired upon by troops of the British Indian army.</p>
+
+      <h2>Partition of 1947</h2>
+      
+      <p><strong>Direct Action Day (Great Calcutta Killings), 1946</strong> - 4,000-10,000 killed in 4 days; Tens of thousands arrested, Muslim League-called protest triggered massive Hindu-Muslim riots in Calcutta.</p>
+
+      <p><strong>Noakhali Riots & Bihar Retaliatory Massacre, 1946</strong> - 5,000 Hindus killed in Noakhali; 7,000-30,000 Muslims killed in Bihar, Large-scale arrests, Wave of communal massacres and forced conversions in Bengal and Bihar.</p>
+
+      <p><strong>Partition of India Violence, 1947</strong> - Hundreds of thousands arrested/displaced Widespread massacres and communal violence during mass migration across the new borders</p>
+
+      <p>Deaths: <strong>200,000 – 2,000,000</strong></p>
+      <p>Displaced: <strong>14–18 million</strong></p>
+
+       <h2> Methodology </h2>
+
+<p>The projects follows a digital humanities-based research design integrating historical analysis, spatial mapping, digital archiving and generative AI. </P> 
+
+    <p><strong>Historical Analysis </strong></p>
+<p>Collection and literature review of secondary resources (books, archival documents, newspapers, photographs, government records)</p>
+
+<p>The website is based on the Borg and Gall development model which consists of 10 steps, (1) research and information collecting, (2) planning, (3) developing preliminary forms of product, (4) preliminary field testing, (5) playing product revision, (6) playing field testing, (7) operational product revision, (8) operational field testing, (9) final product revision, and (10) dissemination and implementation (Lubis et. al,
+2019).</p>
+
+<h3>Large Language Models Used</h3>
+
+<p> Anthropic Claude 4 Sonnet </p>
+<p> Cursor AI </p>
+<p> Open AI ChatGPT 5.1</p>
+<p> Google Gemini 3 pro</p>
+<p> Microsoft Copilot </p>
+
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="btn" id="playBtn">Pause</button>
+    <button class="btn" id="muteBtn">Unmute</button>
+  </div>
+
+  <script>
+    const video = document.getElementById("bgVideo");
+    const scroll = document.getElementById("scroll");
+    const playBtn = document.getElementById("playBtn");
+    const muteBtn = document.getElementById("muteBtn");
+
+    /* FIX INSERTED: FORCE ANIMATION TO START AT THE BEGINNING */
+    window.addEventListener('DOMContentLoaded', () => {
+      scroll.style.animation = 'none';
+      void scroll.offsetHeight;  // reflow
+      scroll.style.animation = '';
+    });
+
+    // Try autoplay WITH SOUND first, fallback to muted (browser rules)
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        video.muted = false;
+        await video.play();
+      } catch (e) {
+        video.muted = true;
+        try { await video.play(); } catch(err) {}
+      }
+      scroll.style.animationPlayState = "running";
+    });
+
+    // Start credits when video plays
+    video.addEventListener("play", () => {
+      scroll.style.animationPlayState = "running";
+    });
+    video.addEventListener("pause", () => {
+      scroll.style.animationPlayState = "paused";
+    });
+
+    // Controls
+    playBtn.addEventListener("click", () => {
+      if (video.paused) {
+        video.play();
+        playBtn.textContent = "Pause";
+      } else {
+        video.pause();
+        playBtn.textContent = "Play";
+      }
+    });
+
+    muteBtn.addEventListener("click", () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? "Unmute" : "Mute";
+    });
+  </script>
+
+</body>
+</html>
